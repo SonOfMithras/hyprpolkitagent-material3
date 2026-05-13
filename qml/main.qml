@@ -14,6 +14,7 @@ ApplicationWindow {
     maximumWidth: minimumWidth
     maximumHeight: minimumHeight
     visible: true
+    
     onClosing: {
         hpa.setResult("fail");
     }
@@ -44,30 +45,22 @@ ApplicationWindow {
 
         ColumnLayout {
             anchors.fill: parent
-            anchors.margins: 4
+            anchors.margins: 12
 
-            Label {
-                color: Qt.darker(system.windowText, 0.8)
-                font.bold: true
-                font.pointSize: Math.round(fontMetrics.height * 1.05)
-                text: "Authenticating for " + hpa.getUser()
-                Layout.alignment: Qt.AlignHCenter
-                Layout.maximumWidth: parent.width
-                elide: Text.ElideRight
-                wrapMode: Text.WordWrap
-            }
-
-            HSeparator {
-                Layout.topMargin: fontMetrics.height / 2
-                Layout.bottomMargin: fontMetrics.height / 2
+            Item {
+                Layout.fillHeight: true
             }
 
             Label {
-                color: system.windowText
-                text: hpa.getMessage()
-                Layout.maximumWidth: parent.width
-                elide: Text.ElideRight
-                wrapMode: Text.WordWrap
+              color: palette.windowText
+              font.weight: 700
+              font.letterSpacing: 1
+              font.pointSize: Math.round(fontMetrics.height * 1.2)
+              text: "Authentication Required"
+              Layout.alignment: Qt.AlignHCenter
+              Layout.maximumWidth: parent.width
+              elide: Text.ElideRight
+              wrapMode: Text.WordWrap
             }
 
             TextField {
@@ -75,7 +68,21 @@ ApplicationWindow {
 
                 Layout.topMargin: fontMetrics.height / 2
                 placeholderText: "Password"
+                placeholderTextColor: Qt.darker(palette.text, 1.5)
+                Layout.preferredWidth: 300
+                Layout.preferredHeight: 40
                 Layout.alignment: Qt.AlignHCenter
+                horizontalAlignment: TextInput.AlignHCenter
+                verticalAlignment: TextInput.AlignVCenter
+                color: palette.text
+                leftPadding: 16
+                rightPadding: 16
+                
+                background: Rectangle {
+                  color: palette.base
+                  radius: height / 2
+                }
+                
                 hoverEnabled: true
                 persistentSelection: true
                 echoMode: TextInput.Password
@@ -120,27 +127,53 @@ ApplicationWindow {
                 Layout.fillHeight: true
             }
 
-            HSeparator {
-                Layout.topMargin: fontMetrics.height / 2
-                Layout.bottomMargin: fontMetrics.height / 2
-            }
-
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 Layout.rightMargin: fontMetrics.height / 2
 
                 Button {
+                    id: control2
                     text: "Cancel"
+                    Layout.preferredWidth: 100
+                    Layout.preferredHeight: 36
                     onClicked: (e) => {
                         hpa.setResult("fail");
+                    }
+
+                    contentItem: Text {
+                      text: control2.text
+                      color: palette.buttonText
+                      horizontalAlignment: Text.AlignHCenter
+                      verticalAlignment: Text.AlignVCenter
+                    }
+
+                    background: Rectangle {
+                      radius: height / 2
+                      color: control2.down ? palette.mid : (control2.hovered ? Qt.lighter(palette.button, 1.2) : palette.button)
                     }
                 }
 
                 Button {
+                    id: control
                     text: "Authenticate"
+                    Layout.preferredWidth: 120
+                    Layout.preferredHeight: 36
                     onClicked: (e) => {
                         hpa.setResult("auth:" + passwordField.text);
                     }
+
+                    contentItem: Text {
+                      text: control.text
+                      color: palette.buttonText
+                      horizontalAlignment: Text.AlignHCenter
+                      verticalAlignment: Text.AlignVCenter
+                    }
+
+                    background: Rectangle {
+                      radius: height / 2
+                      color: control.down ? palette.mid : (control.hovered ? Qt.lighter(palette.button, 1.2) : palette.button)
+                    }
+
                 }
 
             }
@@ -151,13 +184,6 @@ ApplicationWindow {
 
     component Separator: Rectangle {
         color: Qt.darker(window.palette.text, 1.5)
-    }
-
-    component HSeparator: Separator {
-        implicitHeight: 1
-        Layout.fillWidth: true
-        Layout.leftMargin: fontMetrics.height * 8
-        Layout.rightMargin: fontMetrics.height * 8
     }
 
 }
